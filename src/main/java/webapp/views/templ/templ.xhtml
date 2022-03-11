@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"                
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>               
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Style-Type" content="text/css" />  
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width" />   
+        
+        <title>
+            <ui:insert name="title"/>
+        </title> 
+
+        <link rel="shortcut icon" href="#{resource['icon/service-16.png']}" type="image/png"/>
+        
+        <h:outputStylesheet library="css" name="style.css"/>
+        <h:outputStylesheet library="css" name="icons.css"/>
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+        <f:view locale="#{_bean.locale}" />
+    </h:head>
+
+    <ui:insert name="preRendered"/>
+
+    <h:body>         
+        <ui:insert name="customCSS"/>
+        
+        <script type="text/javascript">
+            PrimeFaces.locales ['ru'] = {
+                closeText: 'Закрыть',
+                prevText: 'Назад',
+                nextText: 'Вперёд',
+                currentText: 'Сегодня',
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+                dayNames: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
+                dayNamesShort: ['Вс.', 'Пн.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Сб.'],
+                dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                weekHeader: 'Неделя',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Только время',
+                timeText: 'Время',
+                hourText: 'Час',
+                minuteText: 'Минута',
+                secondText: 'Секунда',
+                ampm: false,
+                month: 'Месяц',
+                week: 'неделя',
+                day: 'День',
+                allDayText: 'Весь день'
+            };
+        </script>
+                                
+        #{_bean.onBeforeOpenForm()}        
+        
+        <ui:insert name="centerContent"/>                
+        <ui:insert name="commonDialogs"/>
+        <ui:insert name="customJavaScript"/>         
+
+    </h:body>
+
+</html>

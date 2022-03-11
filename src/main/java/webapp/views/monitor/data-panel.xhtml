@@ -1,0 +1,19 @@
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html">
+    
+    <p:panel header="#{bundle.View}" closable="true" widgetVar="viewPanel" style="height: 99%;">
+        <p:ajax event="close" listener="#{ticketsMonitor.onViewPanelClose()}"/>
+        <h:panelGrid columns="1" styleClass="table-style" rendered="#{_bean.selectedTicket != null}">
+            <p:tabView dynamic="true" styleClass="table-style">
+                <p:tab title="#{bundle.Task}">
+                    <ui:include src="/views/custom/ticket-main-panel.xhtml"/>      
+                </p:tab>
+            </p:tabView>
+        </h:panelGrid>
+    </p:panel>
+    
+</ui:composition>
+

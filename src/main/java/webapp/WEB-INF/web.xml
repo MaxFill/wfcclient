@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <display-name>FSOM Workflow client</display-name>
+    <context-param>
+        <param-name>VERSION_NUMBER</param-name>
+        <param-value>1.1.5</param-value>
+    </context-param>
+    <context-param>
+        <param-name>VERSION_DATE</param-name>
+        <param-value>26.01.2022</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>rostelecom-light</param-value>
+    </context-param>
+    <filter>
+        <filter-name>RedirectFilter</filter-name>
+        <filter-class>ru.rt.fsom.wfc.RedirectFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>RedirectFilter</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+    </filter-mapping>
+
+    <listener>
+        <description>ServletContextListener</description>
+        <listener-class>ru.rt.fsom.wfc.ServletListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>ru.rt.fsom.wfc.SessionListener</listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
+        <url-pattern>*.faces</url-pattern>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            20
+        </session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>/faces/views/login.xhtml</welcome-file>
+    </welcome-file-list>
+    <error-page>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/views/expire.xhtml</location>
+    </error-page>
+</web-app>

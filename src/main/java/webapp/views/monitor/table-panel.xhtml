@@ -1,0 +1,71 @@
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html">
+    
+    <p:panel id="tablePanel" header="#{bundle.SearcheResult}" style="height: 99%;"> 
+        <f:facet name="actions">
+            <p:commandLink styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default" style="width:1.3em;"
+                           onclick="PF('mainLayout').toggle('center_north'); PF('searchePanel').show();">
+                <h:outputText styleClass="pi pi-filter" />
+            </p:commandLink>
+        </f:facet>
+        <h:panelGrid columns="1" styleClass="table-style">          
+            <p:dataTable id="tblTickets"
+                     value="#{ticketsMonitor.getTickets()}" var="ticket" 
+                     emptyMessage="#{bundle.EmptyTable}"
+                     paginator="true" paginatorPosition="bottom"  
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="#{bundle.CountRecords}: {totalRecords}, #{bundle.Showing}: {startRecord}-{endRecord} "
+                     rows="10" rowsPerPageTemplate="5, 10, 20, 35, 50, 70, 100" 
+                     tableStyle="table-layout: auto;" styleClass="ui-grid-col-12"
+                     sortBy="#{ticket.dateIssue}" sortOrder="descending" rowKey="#{ticket.ticketId}"
+                     selection="#{ticketsMonitor.selectedTicket}" selectionMode="single">
+
+                <p:ajax event="page" listener="#{ticketsMonitor.onPageChange}"/>                
+                <p:ajax event="rowSelect" listener="#{ticketsMonitor.onTicketSelect}"/> 
+
+                <p:column width="15" headerText="" >
+                    <p:graphicImage value="/resources/icon/#{ticket.ticketStatus.icon16}.png"/>
+                </p:column>
+
+                <p:column headerText="#{bundle.Request}" sortBy="#{ticket.requestId}" >
+                    #{ticket.requestId}
+                </p:column>
+
+                <p:column headerText="#{bundle.Ticket}" sortBy="#{ticket.ticketId}" >
+                    #{ticket.ticketId}
+                </p:column>
+
+                <p:column headerText="#{bundle.Owner}" sortBy="#{ticket.userName}" >
+                    #{ticket.userName}
+                </p:column>                
+
+                <p:column headerText="#{bundle.IssueDate}" sortBy="#{ticket.dateIssue}" >
+                    #{ticketsMonitor.convertDate(ticket.dateIssue)}
+                </p:column>
+
+                <p:column headerText="#{bundle.JeopardyDate}" sortBy="#{ticket.dateJeopardy}" >
+                     #{ticketsMonitor.convertDate(ticket.dateJeopardy)}
+                </p:column>
+
+                <p:column headerText="#{bundle.Discription}" sortBy="#{ticket.ticketInfo}" >
+                    #{ticket.ticketInfo}
+                </p:column>
+
+                <p:column headerText="#{bundle.Status}" sortBy="#{ticket.ticketStatus.name}" styleClass="#{ticket.ticketStatus.style}">
+                    #{ticket.ticketStatus.name}
+                </p:column>
+
+                <p:column width="20" >
+                    <p:commandButton title="#{bundle.Open}" icon="ui-icon pi pi-search" 
+                                     actionListener="#{ticketsMonitor.onOpenTicketForm(ticket)}">
+                        <p:ajax event="dialogReturn" listener="#{ticketsMonitor.onUpdateAfterCloseForm}" update="tableFRM" />
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>                        
+        </h:panelGrid>
+    </p:panel>
+</ui:composition>
+

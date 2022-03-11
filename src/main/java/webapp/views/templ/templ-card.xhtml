@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/views/templ/templ.xhtml">
+      
+    <ui:define name="title">
+        #{_bean.getFormHeader()}
+    </ui:define>
+    
+    <ui:define name="centerContent"> 
+        <h:form id="mainFRM" enctype="multipart/form-data" style="height: 100%;">                         
+            <ui:insert name="setFocus"/>
+            <h:panelGrid columns="1" styleClass="table-style"  >
+            <p:panelGrid layout="grid" columns="1" columnClasses="ui-grid-col-12 col-padding" styleClass="ui-grid-col-12 without-spaces">
+                <p:toolbar id="explToolBar">
+                    <f:facet name="right">
+                        <ui:insert name="CardToolButtons"/>                        
+                    </f:facet>
+                </p:toolbar> 
+
+                <p:messages showDetail="false" closable="true" styleClass="ui-grid-col-12 without-spaces">
+                    <p:autoUpdate />
+                </p:messages>
+
+                <p:tabView orientation="left" id="mainTabView" styleClass="ui-grid-col-12 col-padding" activeIndex="#{_bean.tabActiveIndex}" dynamic="true" >
+                    <p:ajax event="tabChange" listener="#{_bean.onTabChange}" />
+                    <ui:insert name="page_body"/>
+                </p:tabView>
+
+            </p:panelGrid>
+            </h:panelGrid>
+            
+            <ui:insert name="form_scripts"/>
+            <ui:include src="/views/common/confirm-dlg.xhtml"/>
+            
+            <p:remoteCommand name="onChangeItem" immediate="true" actionListener="#{_bean.onItemChange()}" oncomplete="return itemChange = 0;"/> 
+        </h:form>                        
+    </ui:define>
+    
+    <ui:define name="customJavaScript">
+        <script type="text/javascript">
+                var itemChange = 0;
+                var formWidth = 0;
+                var formHeight = 0;
+
+                window.onresize = function(){
+                    formWidth  = window.innerWidth + 5;
+                    formHeight = window.innerHeight;
+                    return null;
+                };
+        </script>
+    </ui:define>
+    
+</ui:composition>

@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/views/templ/templ-monitor.xhtml">
+
+    <ui:param name="_bean" value="#{ticketsMonitor}"/>    
+   
+    <ui:define name ="infoPanel">
+        <ui:include src="/views/monitor/info-panel.xhtml"/>  
+    </ui:define>
+    
+    <ui:define name ="tablePanel">
+        <ui:include src="/views/monitor/table-panel.xhtml"/>               
+    </ui:define>
+    
+    <ui:define name ="dataPanel">         
+        <ui:include src="/views/monitor/data-panel.xhtml"/>               
+    </ui:define>
+    
+    <ui:define name ="searchePanel">  
+        <ui:include src="/views/monitor/searche-panel.xhtml"/>        
+    </ui:define>
+    
+   <ui:define name="customDialogs">
+       <ui:include src="/views/monitor/save-filter-dlg.xhtml"/>        
+    </ui:define>
+    
+</ui:composition>

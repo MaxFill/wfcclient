@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+    <application>
+        
+        <el-resolver>
+            org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver
+        </el-resolver>
+    
+        <!-- Настройки для PrimeFaces FrameWork dialog -->
+        <action-listener>org.primefaces.application.DialogActionListener</action-listener>
+        <navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
+        <view-handler>org.primefaces.application.DialogViewHandler</view-handler>               
+        
+        <locale-config>
+            <default-locale>ru</default-locale>
+            <supported-locale>en</supported-locale>
+        </locale-config>        
+	
+        <resource-bundle>
+            <var>bundle</var>
+            <base-name>locale.Bundle</base-name>            
+        </resource-bundle>
+	
+        <resource-bundle>
+            <var>msg</var>
+            <base-name>locale.messages</base-name>            
+        </resource-bundle>
+    </application>
+    
+    <factory>
+        <exception-handler-factory>
+           org.primefaces.application.exceptionhandler.PrimeExceptionHandlerFactory
+        </exception-handler-factory>
+    </factory>
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>         
+        
+        <navigation-case>
+            <from-outcome>attachePreview</from-outcome>
+            <to-view-id>/views/custom/attache-preview.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>                
+        <navigation-case>
+            <from-outcome>monitor</from-outcome>
+            <to-view-id>/views/monitor/monitor.xhtml</to-view-id>
+            <redirect />
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>cross_patching</from-outcome>
+            <to-view-id>/views/custom/cross-patching.xhtml</to-view-id>
+            <redirect />
+        </navigation-case> 
+    </navigation-rule>
+    
+    <managed-bean>
+        <managed-bean-name>currentDate</managed-bean-name>
+        <managed-bean-class>java.util.Date</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    
+</faces-config>

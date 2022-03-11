@@ -1,0 +1,64 @@
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html">    
+               
+    <p:panelGrid columns="1" layout="grid" columnClasses="ui-grid-col-12 col-padding" styleClass="ui-grid-col-12 without-spaces">        
+        <p:fileUpload id="fileUpload" rendered="#{not ticketBean.readOnly}"
+                      disabled="#{ticketBean.isReadOnly()}"
+                      allowTypes="#{ticketBean.allowFileTypes}"
+                      sizeLimit="#{ticketBean.maxSizeFile}"
+                      invalidFileMessage = "#{bundle.INVALID_FILE_TYPE}"
+                      invalidSizeMessage = "#{bundle.INVALID_FILE_SIZE}"
+                      fileLimitMessage   = "#{bundle.INVALID_FILE_COUNT}"
+                      styleClass="ui-grid-col-12 col-padding"
+                      fileLimit="1" skinSimple="true" 
+                      mode="advanced" auto="true" multiple="false"
+                      dragDropSupport="true"
+                      label="#{bundle.SelectFiles}" 
+                      listener="#{ticketBean.onUploadAtache}"                      
+                      value="#{ticketBean.file}"
+                      update="attachesTabl">
+        </p:fileUpload>
+        
+        <p:dataTable id="attachesTabl" value="#{ticketBean.attaches}" 
+                     emptyMessage="#{bundle.EmptyTable}"
+                     tableStyle="table-layout: auto;" styleClass="ui-grid-col-12 col-padding"
+                     paginator="true" paginatorPosition="bottom"                       
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     rowsPerPageTemplate="5,10,25" rows="5" 
+                     rowKey="#{attache.id}" selectionMode="single" var="attache" >
+
+            <p:column headerText="#{bundle.Name}" sortBy="#{attache.name}" >
+                #{attache.name}
+            </p:column>
+
+            <p:column headerText="#{bundle.Size}" >
+                #{ticketBean.getFileSize(attache)}
+            </p:column>   
+            
+            <p:column headerText="#{bundle.DateCreate}" >
+                <h:outputLabel value="#{attache.dateCreate}" >
+                    <f:convertDateTime pattern="dd.MM.yy : HH.mm"/>
+                </h:outputLabel>
+            </p:column>
+
+            <p:column >
+                <p:button outcome="attachePreview" icon="pi pi-external-link" title="#{bundle.Open}" target="_blank">
+                    <f:param name="ITEM_ID" value="#{attache.id}" />
+                </p:button>
+                <p:commandButton icon="pi pi-download" title="#{bundle.Download}" 
+                                 ajax="false" action="#{ticketBean.onDownloadAttache(attache)}">
+                </p:commandButton>
+                <p:commandButton icon="pi pi-trash" title="#{bundle.Delete}"
+                                 disabled="#{ticketBean.readOnly}"
+                                 update="attachesTabl"
+                                 actionListener="#{ticketBean.onDeleteAttache(attache)}">
+                    <p:confirm header="#{bundle.ConfirmDelete}" message="#{msg.OperationIrreversible} #{bundle.AreYouSure}" icon="fa-exclamation-circle" />
+                </p:commandButton>
+            </p:column>
+        </p:dataTable>
+    </p:panelGrid>
+
+</ui:composition>

@@ -1,0 +1,195 @@
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html">
+                     
+    <p:panel id="pnSearche" header="#{bundle.FilterPanel}" closable="true" widgetVar="searchePanel">
+        <p:ajax event="close" onstart="PF('mainLayout').toggle('center_north');" />
+        <f:facet name="options">
+            <p:menu id="menuSearche">
+                <p:submenu label="#{bundle.Settings}">
+                    <p:menuitem value="#{bundle.HideFilterPanel}" icon="#{ticketsMonitor.getAutoClosePanelIcon()}" 
+                                actionListener="#{ticketsMonitor.onChangeAutoClosePanel()}" update="menuSearche">
+                    </p:menuitem>
+                </p:submenu>
+            </p:menu>
+        </f:facet>
+
+        <p:panelGrid columns="3" layout="grid" styleClass="ui-grid-col-12 without-spaces">
+            <h:panelGrid columns="2">
+                <p:outputLabel value="#{bundle.Status}:" rendered="true"/>
+                <h:panelGroup >
+                    <div class="ui-inputgroup ui-grid-col-12">
+                    <p:selectManyMenu id="statusSearche" value="#{ticketsMonitor.filter.statuses}"
+                            converter="#{ticketStatusConverter}" var="c" 
+                            showCheckbox="true" styleClass="manymenu-advanced">
+                            <f:selectItems value="#{ticketsMonitor.filterStatusItems}" 
+                                           var="status" itemLabel="#{status.name}" itemValue="#{status}"/>
+                            <p:column>
+                                <p:graphicImage value="/resources/icon/#{c.icon16}.png"/>
+                            </p:column>
+
+                            <p:column>
+                                <h:outputText value="#{c.name}"/>
+                            </p:column>
+                        </p:selectManyMenu>
+                        <h:panelGrid columns="1" width="15">
+                            <h:panelGroup>
+                                <p:commandButton icon="pi pi-plus" title="#{bundle.SelectAll}" actionListener="#{ticketsMonitor.onSetAllFilterStatus()}" update="statusSearche" />
+                                <p:commandButton icon="pi pi-minus" title="#{bundle.DeselectAll}" actionListener="#{ticketsMonitor.onClearFilterStatus()}" update="statusSearche" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </div>
+                </h:panelGroup>
+            </h:panelGrid>
+
+            <h:panelGrid columns="2" styleClass="ui-grid-col-12">
+                <p:outputLabel value="#{bundle.Request}:" />
+                <h:panelGroup >
+                    <div class="ui-inputgroup ui-grid-col-12">
+                        <p:inputText id="RequestId" value="#{ticketsMonitor.filter.requestId}" maxlength="9" styleClass="ui-grid-col-12">
+                            <p:keyFilter regEx="/[\d]/"/>
+                        </p:inputText>
+                        <p:commandButton icon="pi pi-times" actionListener="#{ticketsMonitor.filter.setRequestId(null)}" update="RequestId" />
+                    </div>
+                </h:panelGroup> 
+
+                <p:outputLabel value="#{bundle.Ticket}:" />
+                <h:panelGroup >
+                    <div class="ui-inputgroup ui-grid-col-12">
+                        <p:inputText id="TicketId" value="#{ticketsMonitor.filter.ticketId}" maxlength="9" styleClass="ui-grid-col-12">
+                            <p:keyFilter regEx="/[\d]/"/>
+                        </p:inputText>
+                        <p:commandButton icon="pi pi-times" actionListener="#{ticketsMonitor.filter.setTicketId(null)}" update="TicketId" />
+                    </div>
+                </h:panelGroup> 
+
+                <p:outputLabel value="#{bundle.Owner}:"/>
+                <h:panelGroup styleClass="ui-grid-col-12">
+                <div class="ui-inputgroup">
+                    <p:inputText id="ownerSearche" value="#{ticketsMonitor.filter.userName}" styleClass="ui-grid-col-12"/>
+                    <p:commandButton icon="pi pi-times" actionListener="#{ticketsMonitor.filter.setUserName(null)}" update="ownerSearche" />
+                </div>
+                </h:panelGroup>
+
+                <p:outputLabel value="#{bundle.Discription}:"/>
+                <h:panelGroup styleClass="ui-grid-col-12">
+                <div class="ui-inputgroup">
+                    <p:inputText id="DiscriptionSearche" value="#{ticketsMonitor.filter.ticketInfo}" styleClass="ui-grid-col-12"/>
+                    <p:commandButton icon="pi pi-times" actionListener="#{ticketsMonitor.filter.setTicketInfo(null)}" update="DiscriptionSearche" />
+                </div>
+                </h:panelGroup>
+
+                <p:outputLabel value="#{bundle.Jeopardy}:" />                                
+                <p:selectOneMenu id="JeopardySearche" value="#{ticketsMonitor.filter.jeopardyStatus}" styleClass="ui-grid-col-12"> 
+                    <f:selectItem itemLabel="#{bundle.All}" itemValue="#{null}"/>
+                    <f:selectItem itemLabel="YES" itemValue="YES"/>
+                    <f:selectItem itemLabel="NO" itemValue="NO"/>
+                </p:selectOneMenu>
+
+                <p:outputLabel value="#{bundle.WorkQueue}:"/>
+                <p:selectOneMenu id="workQueueSearche" value="#{ticketsMonitor.filter.group}" styleClass="ui-grid-col-12"
+                    converter="ticketGroupConverter"
+                    var="c" filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="#{bundle.All}" itemValue="#{null}"/>
+                    <f:selectItems value="#{ticketsMonitor.filterTicketGroups}" var="group" itemLabel="#{group.name}" itemValue="#{group}"/>
+                    <p:column>
+                        <h:outputText value="#{c.name}"/>
+                    </p:column>
+                </p:selectOneMenu>
+            </h:panelGrid>   
+
+            <h:panelGrid columns="2" styleClass="ui-grid-col-12">
+                <p:outputLabel value="#{bundle.IssueDate} #{bundle.from}:"/>
+                <h:panelGroup styleClass="ui-grid-col-12">
+                <div class="ui-inputgroup">
+                    <p:calendar value="#{ticketsMonitor.filter.dateIssueFrom}" inputStyle="width: 145px;" id="IssueDateFrom"
+                        showHour="true" showMinute="true" pattern="dd.MM.yyyy HH:mm"
+                        locale="#{ticketsMonitor.locale}"
+                        showButtonPanel="true"
+                        navigator="true" yearRange="1900:+0" >
+                    </p:calendar> 
+                    <p:commandButton icon="pi pi-times" actionListener="#{ticketsMonitor.filter.setDateIssueFrom(null)}" update="IssueDateFrom" />
+                </div>
+                </h:panelGroup>                                                        
+
+                <p:outputLabel value="#{bundle.IssueDate} #{bundle.to}:"/>  
+                <h:panelGroup styleClass="ui-grid-col-12">
+                    <div class="ui-inputgroup">
+                        <p:calendar value="#{ticketsMonitor.filter.dateIssueTo}" inputStyle="width: 145px;" id="IssueDateTo"
+                            showHour="true" showMinute="true" pattern="dd.MM.yyyy HH:mm"
+                            locale="#{ticketsMonitor.locale}"
+                            showButtonPanel="true"
+                            navigator="true" yearRange="1900:+0">
+                        </p:calendar> 
+                        <p:commandButton icon="pi pi-times" actionListener="#{ticketsMonitor.filter.setDateIssueTo(null)}" update="IssueDateTo" />
+                    </div>
+                </h:panelGroup> 
+
+                <p:outputLabel value="#{bundle.JeopardyDate} #{bundle.from}:"/>
+                <h:panelGroup styleClass="ui-grid-col-12">
+                <div class="ui-inputgroup">
+                    <p:calendar value="#{ticketsMonitor.filter.dateJeopardyFrom}" inputStyle="width: 145px;" id="dateJeopardyFrom"
+                        showHour="true" showMinute="true" pattern="dd.MM.yyyy HH:mm"
+                        locale="#{ticketsMonitor.locale}"
+                        showButtonPanel="true"
+                        navigator="true" yearRange="1900:+0" >
+                    </p:calendar> 
+                    <p:commandButton icon="pi pi-times" actionListener="#{ticketsMonitor.filter.setDateJeopardyFrom(null)}" update="dateJeopardyFrom" />
+                </div>
+                </h:panelGroup>                                                        
+
+                <p:outputLabel value="#{bundle.JeopardyDate} #{bundle.to}:"/>  
+                <h:panelGroup styleClass="ui-grid-col-12">
+                    <div class="ui-inputgroup">
+                        <p:calendar value="#{ticketsMonitor.filter.dateJeopardyTo}" inputStyle="width: 145px;" id="JeopardyDateTo"
+                            showHour="true" showMinute="true" pattern="dd.MM.yyyy HH:mm"
+                            locale="#{ticketsMonitor.locale}"
+                            showButtonPanel="true"
+                            navigator="true" yearRange="1900:+0" >
+                        </p:calendar> 
+                        <p:commandButton icon="pi pi-times" actionListener="#{ticketsMonitor.filter.setDateJeopardyTo(null)}" update="JeopardyDateTo" />
+                    </div>
+                </h:panelGroup> 
+                <p:separator/><p:separator/>
+                <p:outputLabel value="#{bundle.SelectFilter}:"/>
+                <h:panelGroup>
+                    <div class="ui-inputgroup">
+                        <p:selectOneMenu id="filters" value="#{ticketsMonitor.filter}" var="c"
+                                         converter="ticketFilterConverter" >
+                            <f:selectItems value="#{ticketsMonitor.filters}" var="filter" itemLabel="#{filter.name}" itemValue="#{filter}"/>
+                            <p:ajax event="change" update="searcheFRM:pnSearche"/>
+                            <p:column>
+                                <h:outputText value="#{c.name}"/>
+                            </p:column>
+                        </p:selectOneMenu>
+                        <p:commandButton icon="pi pi-save" title="#{bundle.SaveFilter}"
+                                            actionListener="#{ticketsMonitor.onShowDlgSaveFilter()}"
+                                            update="saveFilterFRM">
+                        </p:commandButton>
+                        <p:commandButton icon="pi pi-trash" title="#{bundle.Delete}"
+                                            actionListener="#{ticketsMonitor.onDeleteFilter()}"
+                                            update="filters searcheFRM:pnSearche">
+                            <p:confirm header="#{bundle.ConfirmDelete}" message="#{msg.OperationIrreversible} #{bundle.AreYouSure}" icon="fa-exclamation-circle" />
+                        </p:commandButton>
+                    </div>
+                </h:panelGroup>
+                <p:spacer/>
+                <h:panelGrid columns="2" styleClass="without-spaces">
+                    <p:commandButton id="btnSearche" value="#{bundle.Searche}" icon="pi pi-search" styleClass="ui-main-button"
+                                  update="tableFRM searcheFRM:messages"
+                                  onstart="PF('waitDialog').show()"
+                                  oncomplete="PF('waitDialog').hide();"
+                                  actionListener="#{ticketsMonitor.onSearche()}">
+                    </p:commandButton> 
+                    <p:commandButton value="#{bundle.Clear}" icon="pi pi-ban" 
+                                     update="searcheFRM:pnSearche tableFRM dataFRM" 
+                                     actionListener="#{ticketsMonitor.onClearFilter()}">
+                    </p:commandButton>
+                </h:panelGrid>
+            </h:panelGrid>            
+        </p:panelGrid>        
+    </p:panel>
+</ui:composition>
+

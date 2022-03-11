@@ -1,0 +1,52 @@
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:panelGrid columns="#{_bean.countDataColumn}" styleClass="table-style">
+        <p:outputLabel value="#{bundle.Discription}:"/>
+        <p:inputText value="#{_bean.selectedTicket.ticketInfo}" readonly="true" styleClass="ui-grid-col-12" />
+
+        <p:outputLabel value="#{bundle.Request}:"/>
+        <p:inputText value="#{_bean.selectedTicket.requestId}" readonly="true" /> 
+
+        <p:outputLabel value="#{bundle.Ticket}:"/>
+        <p:inputText value="#{_bean.selectedTicket.ticketId}" readonly="true" />  
+
+        <p:outputLabel value="#{bundle.Status}:"/>
+        <h:panelGroup >
+            <p:inputText value="#{_bean.selectedTicket.ticketStatus.name}" readonly="true" />
+            <p:spacer />
+            <p:graphicImage value="/resources/icon/#{_bean.selectedTicket.ticketStatus.icon16}.png" />            
+        </h:panelGroup>
+
+        <p:outputLabel value="#{bundle.IssueDate}:"/>
+        <p:calendar value="#{_bean.selectedTicket.dateIssue}" inputStyle="width: 145px;" 
+            showHour="true" showMinute="true" pattern="dd.MM.yyyy HH:mm"
+            locale="#{_bean.locale}" disabled="true"
+            showButtonPanel="true" navigator="true" yearRange="1900:+0" >
+        </p:calendar> 
+
+        <p:outputLabel value="#{bundle.ExpirationDate}:"/>
+        <p:calendar value="#{_bean.selectedTicket.dateExpiration}" inputStyle="width: 145px;" 
+            showHour="true" showMinute="true" pattern="dd.MM.yyyy HH:mm"
+            locale="#{_bean.locale}" disabled="true"
+            showButtonPanel="true" navigator="true" yearRange="1900:+0" >
+        </p:calendar> 
+
+        <p:outputLabel value="#{bundle.ProcessedDate}:"/>
+        <p:calendar value="#{_bean.selectedTicket.dateProcessed}" inputStyle="width: 145px;" 
+            showHour="true" showMinute="true" pattern="dd.MM.yyyy HH:mm"
+            locale="#{_bean.locale}" disabled="true"
+            showButtonPanel="true" navigator="true" yearRange="1900:+0" >
+        </p:calendar> 
+
+        <p:outputLabel value="#{bundle.JeopardyDate}:"/>
+        <p:calendar value="#{_bean.selectedTicket.dateJeopardy}" inputStyle="width: 145px;" 
+            showHour="true" showMinute="true" pattern="dd.MM.yyyy HH:mm"
+            locale="#{_bean.locale}" disabled="true"
+            showButtonPanel="true" navigator="true" yearRange="1900:+0" >
+        </p:calendar> 
+    </h:panelGrid>
+</ui:composition>

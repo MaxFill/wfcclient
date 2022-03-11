@@ -1,0 +1,21 @@
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html">
+                     
+    <p:panelGrid columns="1" layout="grid" columnClasses="col-padding" styleClass="ui-grid-col-12 without-spaces" >  
+        <p:dataTable value="#{_bean.selectedTicket.taskParams}" var="task"
+                    selectionMode="single" rowKey="#{task.id}" 
+                    emptyMessage="#{bundle.EmptyTable}"
+                    tableStyle="table-layout: auto;" styleClass="ui-grid-col-12"
+                    scrollable="true" scrollHeight="350">
+            <p:column headerText="#{bundle.Name}" sortBy="#{task.name}" >                        
+                #{task.name}
+            </p:column>
+            <p:column headerText="#{bundle.Value}" sortBy="#{task.value}">
+                #{task.value}
+            </p:column>
+        </p:dataTable>
+    </p:panelGrid>
+</ui:composition>

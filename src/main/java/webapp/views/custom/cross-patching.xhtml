@@ -1,0 +1,179 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/views/templ/templ-card.xhtml">
+    
+    <ui:param name="_bean" value="#{ticketBean}"/> 
+    <ui:param name="_isShowHelp" value="#{false}"/>
+    <ui:param name="_canClose" value="#{true}"/>
+    <ui:param name="_status" value="#{ticketBean.selectedTicket.ticketStatus.statusId}"/>
+    
+    <ui:define name="CardToolButtons">
+        <p:importConstants type="ru.rt.fsom.wfc.data.tickets.TicketStatus" var="TicketStatus" />        
+        
+        <p:commandButton value="Reserved" title="Set ticket status as Reserved" 
+                    disabled="#{ticketBean.isReadOnly() or TicketStatus.RESERVED_CODE == _status}"
+                    update="mainFRM"
+                    actionListener="#{ticketBean.onTicketReserved()}" 
+                    onclick="if (itemChange == 1) {onChangeItem();}">
+            <f:param name="isRequired" value="true"/>
+            <p:confirm header="#{bundle.ConfirmAction}" message="#{msg.YouAcceptTaskWork}" icon="pi pi-exclamation-triangle" />
+        </p:commandButton>
+        <span class="ui-separator">
+           <span class="ui-icon ui-icon-grip-dotted-vertical" />
+        </span>
+        <p:commandButton value="Waiting" title="Set ticket status as Waiting" 
+                    disabled="#{ticketBean.isReadOnly() or TicketStatus.WAITING_CODE == _status}"
+                    update="mainFRM"
+                    actionListener="#{ticketBean.onTicketWaiting()}" 
+                    onclick="if (itemChange == 1) {onChangeItem();}">
+            <f:param name="isRequired" value="true"/>
+            <p:confirm header="#{bundle.ConfirmAction}" message="#{msg.YouAcceptTaskWork}" icon="pi pi-exclamation-triangle" />
+        </p:commandButton>
+        <span class="ui-separator">
+           <span class="ui-icon ui-icon-grip-dotted-vertical" />
+        </span>
+        <p:menuButton value="Sent..." >
+            <p:menuitem value="Sent OK" title="Sent ticket status as OK"
+                        disabled="#{ticketBean.isReadOnly() or TicketStatus.SENT_CODE_OK == _status}"
+                        update="mainFRM"
+                        actionListener="#{ticketBean.onTicketSentOk()}" 
+                        onclick="if (itemChange == 1) {onChangeItem();}">
+                <f:param name="isRequired" value="true"/>
+                <p:confirm header="#{bundle.ConfirmAction}" message="#{msg.TaskMarkedAsCompleted}" icon="pi pi-exclamation-triangle" />
+            </p:menuitem>
+            <p:menuitem value="Sent Fail" title="Sent ticket status as Fail"
+                        disabled="#{ticketBean.isReadOnly() or TicketStatus.SENT_CODE_FAIL == _status}"
+                        update="mainFRM"
+                        actionListener="#{ticketBean.onTicketSentFail()}" 
+                        onclick="if (itemChange == 1) {onChangeItem();}">
+                <f:param name="isRequired" value="true"/>
+                <p:confirm header="#{bundle.ConfirmAction}" message="#{msg.TaskMarkedAsCompleted}" icon="pi pi-exclamation-triangle" />
+            </p:menuitem>
+            <p:menuitem value="Sent Exp" title="Sent ticket status as Exp"
+                        disabled="#{ticketBean.isReadOnly() or TicketStatus.SENT_CODE_EXPIRED == _status}"
+                        update="mainFRM"
+                        actionListener="#{ticketBean.onTicketSentExp()}" 
+                        onclick="if (itemChange == 1) {onChangeItem();}">
+                <f:param name="isRequired" value="true"/>
+                <p:confirm header="#{bundle.ConfirmAction}" message="#{msg.TaskMarkedAsCompleted}" icon="pi pi-exclamation-triangle" />
+            </p:menuitem>
+        </p:menuButton>
+        <span class="ui-separator">
+           <span class="ui-icon ui-icon-grip-dotted-vertical" />
+        </span>
+        <p:commandButton value="Cancelled" title="Set ticket status Cancelled"
+                    disabled="#{ticketBean.isReadOnly() or TicketStatus.CANCELLED_CODE == _status}"
+                    update="mainFRM"
+                    actionListener="#{ticketBean.onTicketCancelled()}" 
+                    onclick="if (itemChange == 1) {onChangeItem();}">
+           <f:param name="isRequired" value="true"/>
+           <p:confirm header="#{bundle.ConfirmAction}" message="#{msg.TaskMarkedAsNotCompleted}" icon="pi pi-exclamation-triangle" />
+        </p:commandButton>
+        <span class="ui-separator">
+           <span class="ui-icon ui-icon-grip-dotted-vertical" />
+        </span>
+        <p:commandButton id="btnSaveClose" title="#{bundle.SaveAndClose}"
+                disabled="#{ticketBean.isReadOnly()}"
+                icon="ico_save-16"
+                update="mainFRM"
+                actionListener="#{ticketBean.onSaveItemAndClose()}" 
+                onclick="if (itemChange == 1) {onChangeItem();}">
+            <f:param name="isRequired" value="true"/>
+        </p:commandButton>
+    </ui:define>
+
+    <ui:define name="customCSS">
+        <style> 
+            .ui-datascroller .ui-datascroller-content {
+                border: 0px !important;
+                width: 100%;
+            }
+            .ui-datascroller .ui-datascroller-item {
+                margin-bottom: 0.3em !important;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="page_body"> 
+        <p:tab title="#{bundle.Task}">
+            <ui:include src="/views/custom/ticket-main-panel.xhtml"/>
+            <ui:include src="/views/common/attaches.xhtml"/>
+        </p:tab>
+        <p:tab title="#{bundle.Groups}">
+            <p:panelGrid columns="1" layout="grid" columnClasses="col-padding" styleClass="ui-grid-col-12 without-spaces" >  
+                <p:dataTable value="#{ticketBean.ticketGroup}" var="group"
+                            selectionMode="single" rowKey="#{group.id}" 
+                            emptyMessage="#{bundle.EmptyTable}"
+                            scrollable="true" scrollHeight="350">
+                    <p:column headerText="#{bundle.Name}" sortBy="#{group.name}" >                        
+                        #{group.name}
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
+        </p:tab>
+        
+        <p:tab title="#{bundle.TaskParams}">
+            <ui:include src="/views/custom/ticket-params-panel.xhtml"/>
+        </p:tab>
+        
+        <p:tab title="#{bundle.OrderItems}"> 
+            <p:dataScroller value="#{ticketBean.selectedTicket.orderItems}" var="oi" chunkSize="10" >                
+                <p:fieldset>
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-grid-col-12 without-spaces">
+                    <p:panelGrid columns="2" columnClasses="ui-grid-col-3, ui-grid-col-9" styleClass="ui-grid-col-12 without-spaces">
+                        <h:outputLabel value="#{bundle.Action}:"/>
+                        <p:outputLabel value="#{oi.orderItemAction}"/>
+                        <h:outputLabel value="#{bundle.Category}:"/>
+                        <p:outputLabel value="#{oi.orderItemCategory}"/>
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" columnClasses="ui-grid-col-3, ui-grid-col-9" styleClass="ui-grid-col-12 without-spaces">
+                        <h:outputLabel value="#{bundle.Catalog}: "/>
+                        <p:outputLabel value="#{oi.orderItemSpecification.catalogId}"/>
+                        <h:outputLabel value="#{bundle.Specification}:"/>
+                        <p:outputLabel value="#{oi.orderItemSpecification.specId}"/>
+                    </p:panelGrid>
+                </p:panelGrid>
+                    <p:panelGrid columns="1" layout="grid" styleClass="ui-grid-col-12 without-spaces">
+                        <p:dataTable value="#{oi.orderItemAttributes.attribute}" var="atrs" scrollable="true" scrollHeight="350"
+                                     selectionMode="single" rowKey="#{atrs.name}" rendered="#{!empty(oi.orderItemAttributes.attribute)}"
+                                     emptyMessage="#{bundle.EmptyTable}" >
+                            <p:column  >
+                                #{atrs.name}
+                            </p:column>
+                            <p:column  >
+                                #{atrs.value}
+                            </p:column>
+                        </p:dataTable>
+                    </p:panelGrid>
+                </p:fieldset>
+            </p:dataScroller>
+        </p:tab>
+        
+        <p:tab title="#{bundle.Participants}">
+            <p:dataScroller value="#{ticketBean.selectedTicket.orderParties}" var="party" chunkSize="10" >
+                <p:fieldset>
+                    <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-3, ui-grid-col-9" styleClass="ui-grid-col-12 without-spaces">
+                        <p:outputLabel value="#{ticketBean.getFromBundle(party.partyRole)}"/>
+                        <p:outputLabel value="#{party.partyName}"/>
+                    </p:panelGrid>
+                    <p:panelGrid columns="1" layout="grid" styleClass="ui-grid-col-12 without-spaces">
+                        <p:dataTable value="#{party.partyAttributes.attribute}" var="atrs" scrollable="true" scrollHeight="350"
+                                     selectionMode="single" rowKey="#{atrs.name}"
+                                     emptyMessage="#{bundle.EmptyTable}">
+                            <p:column>
+                                #{ticketBean.getFromBundle(atrs.name)}
+                            </p:column>
+                            <p:column>
+                                #{atrs.value}
+                            </p:column>
+                        </p:dataTable>
+                    </p:panelGrid>
+                </p:fieldset>
+            </p:dataScroller>
+        </p:tab>
+    </ui:define>
+    
+</ui:composition>

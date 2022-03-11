@@ -1,0 +1,50 @@
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html">
+    
+    <p:panel id="infoPanel" header="#{bundle.Info}" closable="true" widgetVar="infoPanel" style="height: 99%;">
+        <p:ajax event="close" listener="#{ticketsMonitor.onInfoPanelClose()}"/>
+        <h:panelGrid columns="1" styleClass="table-style">             
+            <p:outputLabel value="#{bundle.Version}:"/>
+            <h:outputLabel value="#{ticketsMonitor.versionNumber}"/>
+            <p:outputLabel value="#{bundle.Date}:"/>
+            <h:outputLabel value="#{ticketsMonitor.versionDate}"/>
+            <p:separator/>
+            <p:outputLabel value="#{bundle.ActiveUsers}:"/>
+            <h:outputLabel value="#{appBean.countActiveUser()}"/>
+            <p:outputLabel value="#{bundle.User}:"/>
+            <h:outputLabel value="#{ticketsMonitor.currentUser.name}"/>
+            <p:separator/>
+            <p:outputLabel value="#{bundle.changeLanguage}:"/>
+            <h:panelGroup id="langPanel" styleClass="ui-panelgrid-blank">
+                <p:selectOneMenu var="lng" value="#{ticketsMonitor.selectedLang}" converter="langConverter" styleClass="ui-grid-col-12">
+                    <f:selectItems value="#{ticketsMonitor.languages}" var="items" itemLabel="#{items.displayName}" itemValue="#{items}"/>
+                    <p:ajax event="change" listener="#{ticketsMonitor.onChangeLocale()}" update="westFRM searcheFRM tableFRM dataFRM"/>
+                    <p:column >
+                        <p:graphicImage value="/resources/images/#{lng.name}.png" /> 
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{lng.displayName}" />
+                    </p:column>
+                </p:selectOneMenu>
+            </h:panelGroup>
+
+            <p:outputLabel value="#{bundle.THEME}:" />
+            <p:themeSwitcher effect="fade" var="t" converter="themeConverter" value="#{ticketsMonitor.currentTheme}" styleClass="ui-grid-col-12">
+                <f:selectItems value="#{ticketsMonitor.themes}" var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme}" />
+                <p:ajax global="false" listener="#{ticketsMonitor.onChangeTheme}"/>
+                <p:column>
+                    #{t.displayName}
+                </p:column>
+            </p:themeSwitcher>
+            <p:separator/>
+            <p:commandButton icon="pi pi-sign-out" value="#{bundle.Exit}" title="#{bundle.CloseSession}" styleClass="ui-main-button"
+                             onclick="return isClose = 1;" ajax="false" style="position: absolute; bottom: 0; margin-bottom: 10px;"
+                             action="#{ticketsMonitor.onSessionExit()}">
+            </p:commandButton>
+        </h:panelGrid>
+    </p:panel>
+    
+</ui:composition>

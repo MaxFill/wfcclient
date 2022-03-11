@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"  
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/views/templ/templ.xhtml"> 
+
+    <ui:define name="title">
+        #{ticketsMonitor.getFormHeader()}
+    </ui:define>
+
+    <ui:define name="customJavaScript">
+        <script>
+            var isClose = 0;
+            window.onbeforeunload = function (e) {
+                e = e || window.event;
+                if (isClose === 1) return;
+                if (e) {
+                    e.returnValue = 'Перед закрытием окна сначала нужно завершить сессию!';
+                }
+                return 'Перед закрытием окна сначала нужно завершить сессию!'; 
+            };
+        </script>
+    </ui:define>
+    
+    <ui:define name="centerContent">               
+        <pe:layout id="mainLayout" fullPage="true" stateCookie="true" widgetVar="mainLayout" resizerTip="#{bundle.Resize}" togglerTipOpen="#{bundle.Close}" togglerTipClosed="#{bundle.Open}"> 
+            <p:ajax event="open" listener="#{ticketsMonitor.handleOpen}" />
+            <p:ajax event="close" listener="#{ticketsMonitor.handleClose}" />
+
+            <pe:layoutPane position="west" resizable="true" size="10%" styleClassContent="layout-panel-content" >
+                <h:form id="westFRM" style="height: 100%;">
+                    <ui:insert name="infoPanel"/>  
+                </h:form>
+            </pe:layoutPane>
+
+            <pe:layoutPane position="center" resizable="true" styleClassContent="layout-panel-content">
+                <pe:layoutPane position="north" resizable="true" size="34%" styleClassContent="layout-panel-content">
+                    <h:form id="searcheFRM" >
+                        <p:growl id="messages" showDetail="true" sticky="false" /> 
+                        <ui:insert name="searchePanel"/>
+                    </h:form>
+                </pe:layoutPane>
+                <pe:layoutPane position="center" resizable="true" styleClassContent="layout-panel-content">
+                    <pe:layoutPane position="center" resizable="true" styleClassContent="layout-panel-content">
+                        <h:form id="tableFRM" >
+                            <ui:insert name="tablePanel"/>
+                            <p:idleMonitor timeout="#{ticketsMonitor.getSessionExpireIdle()}" >
+                                <p:ajax event="idle" oncomplete="document.getElementById('tableFRM:btnExit').click();"/>
+                            </p:idleMonitor>
+                            <p:commandButton id="btnExit" style="display: none;" immediate="true" ignoreAutoUpdate="true"
+                                 onclick="return isClose = 1;" ajax="false"
+                                 action="#{ticketsMonitor.onSessionExpire()}">
+                            </p:commandButton>
+                        </h:form>    
+                    </pe:layoutPane>
+                    <pe:layoutPane position="east" resizable="true" size="30%" styleClassContent="layout-panel-content">
+                        <h:form id="dataFRM" >
+                            <ui:insert name="dataPanel"/>
+                        </h:form>    
+                    </pe:layoutPane>
+                </pe:layoutPane>
+            </pe:layoutPane>
+        </pe:layout>
+    </ui:define>
+
+    <ui:define name="commonDialogs">                       
+        <ui:include src="/views/common/confirm-dlg.xhtml"/>
+        <ui:include src="/views/common/wait-dlg.xhtml"/>         
+        <ui:insert name="customDialogs"/>
+    </ui:define>
+
+</ui:composition>
